@@ -1,0 +1,39 @@
+package com.poc;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+
+public class EventBusReqRes {
+
+
+    static class RequestVerticle extends AbstractVerticle {
+        static final String ADDRESS = "topic-test";
+        @Override
+        public void start(final Promise<Void> startPromise) throws Exception {
+            var eventBus = vertx.eventBus();
+            System.out.println("RequestVerticle - Sending msg");
+            eventBus.<String>request(ADDRESS, "Hello", reply -> {
+                System.out.println("RequestVerticle - Received reply: " + reply.result().body());
+            });
+        }
+    }
+
+    static class ResponseVerticle extends AbstractVerticle {
+        @Override
+        public void start(final Promise<Void> startPromise) throws Exception {
+            startPromise.complete();
+            var eventBus = vertx.eventBus();
+            eventBus.<String>consumer(RequestVerticle.ADDRESS, message -> {
+                System.out.println("ResponseVerticle - Received msg: " + message.body());
+                message.reply("ResponseVerticle_Giving_Reponse : ");
+            });
+        }
+    }
+
+    public static void main(String[] args) {
+        var vertx = Vertx.vertx();
+        vertx.deployVerticle(new RequestVerticle());
+        vertx.deployVerticle(new ResponseVerticle());
+    }
+}

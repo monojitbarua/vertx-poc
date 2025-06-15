@@ -1,0 +1,43 @@
+package com.poc;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+
+public class PubSub {
+
+    public static class Publish extends AbstractVerticle{
+        @Override
+        public void start(Promise<Void> startPromise) throws Exception {
+            startPromise.complete();
+            vertx.setPeriodic(1000, id -> {
+                vertx.eventBus().publish("topic-test", "Hello");
+            });
+        }
+    }
+
+    public static class Subscribe1 extends AbstractVerticle{
+        @Override
+        public void start(Promise<Void> startPromise) throws Exception {
+            startPromise.complete();
+            vertx.eventBus().consumer("topic-test", message -> {
+                System.out.println("Received message from SUB1: " + message.body());
+            });
+        }
+    }
+    public static class Subscribe2 extends AbstractVerticle{
+        @Override
+        public void start(Promise<Void> startPromise) throws Exception {
+            startPromise.complete();
+            vertx.eventBus().consumer("topic-test", message -> {
+                System.out.println("Received message from SUB2: " + message.body());
+            });
+        }
+    }
+
+    public static void main(String[] args) {
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new Publish());
+        vertx.deployVerticle(new Subscribe1());
+    }
+}

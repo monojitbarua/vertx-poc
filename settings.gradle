@@ -1,0 +1,5 @@
+rootProject.name = 'vertx-poc'
+include 'vertx-core'
+include 'vertx-web'
+include 'vertx-ws'
+
