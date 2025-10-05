@@ -19,3 +19,14 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaExec) {
+    standardOutput = System.out
+    errorOutput = System.err
+}

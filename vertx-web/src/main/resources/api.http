@@ -1,0 +1,10 @@
+GET http://localhost:8888
+Context-Type: application/text
+
+###
+GET http://localhost:8888/asset
+Context-Type: application/json
+
+###
+GET http://localhost:8888/asset/ASSET006
+Context-Type: application/json
